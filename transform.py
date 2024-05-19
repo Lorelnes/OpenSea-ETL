@@ -1,3 +1,4 @@
+import pandas as pd
 
 ########################################################
 #     FOR TRANSFORMATION FUNCTIONALITY ONLY             #
@@ -8,36 +9,38 @@
 # SHOULD MAKE SENSE)                                    #
 ########################################################
 
+from extract import response
 
-def transform_twitter_username():
-    """
-    if the collection has a Twitter user_name, it is just the username, you can do something like:
-    if username is ===> Raiser_Art
-    transform it to be the whole url ===> https://twitter.com/Raiser_Art
-    """
-    pass
+def transform_twitter_username(twitter_username):
+    return f'https://twitter.com/{twitter_username}'
+
+response['twitter_url'] = response['twitter_username'].apply(transform_twitter_username)
+
+def transform_instagram_username(instagram_username):
+    return f'https://instagram.com/{instagram_username}'
+
+response['instagram_url'] = response['instagram_username'].apply(transform_instagram_username)
+
+def split_contracts(response):
+    response['address'] = response['contracts'].apply(lambda x: x[0]['address'])
+    response['chain'] = response['contracts'].apply(lambda x: x[0]['chain'])
+
+    response.drop('contracts', axis=1, inplace=True)
+    return response
+
+df1 = split_contracts(response)
+
+print(df1.address)
 
 
-def transform_instagram_username():
-    """
-    should be same as get_full_twitter_url() but for instagram usernames
-    """
-    pass
+# #Checking if there are duplicate rows and removing them if present
+duplicate_rows = response.duplicated()
+num_duplicates = duplicate_rows.sum()
+print('Number of duplicate rows:', num_duplicates)
 
 
-def split_contracts():
-    """
-    every response contains field contracts that is a list and has address and chain in them.
+#Checking if there are NaN values and filling them if present
+nan_values = response.isnull().sum()
+print('Number of NaN values:', nan_values)
 
-    e.g
-        "contracts": [
-        {
-            "address": "0x76a6d1020f584193bd7192c6a7e95ec9f80fab55",
-            "chain": "ethereum"
-        }
-    ]
 
-    you should implement this function so that it splits contracts and if you have a dataframe
-    adds two new columns to the dataframe, address and chain
-    """
-    pass
