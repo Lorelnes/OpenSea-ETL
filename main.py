@@ -1,36 +1,34 @@
-#############################################
-# THIS IS THE ENTRY POINT OF THE PROGRAM      #
-# program should start executing from main.py #
-# I will give you a blueprint of how the flow #
-# should look like                            #
-#############################################
+from extract import make_api_call
+from constants import url, params, headers
+from transform import transform_instagram_username, transform_twitter_username, split_contracts
+from load import load_raw_to_json, load_data_to_database
 
-"""
-every (most of them) functionality you defined in extract.py transform.py load.py should happen here,
-you import them and create a flow in the main.py
+# Extraction
+df, next_token = make_api_call(url=url, headers=headers, params=params)
+for i in range(5):
+    print(df.head())
+    print("Next token:", next_token)
+    params['next'] = next_token
+    df, next_token = make_api_call(url=url, headers=headers, params=params)
+    filename = load_raw_to_json(df, "ethereum", next_token)
 
-for example (THIS IS AN EXAMPLE DO NOT TRY TO DO IT EXACTLY SAME)
-data = make_api_call()
+    print(df.head())
+    print("Next token:", next_token)
 
-load_raw_to_json(data, file_name)
+    # Transformation
+    transformed_df = df.copy()
+    transformed_df['twitter_username'] = transformed_df['twitter_username'].apply(transform_twitter_username)
+    transformed_df['instagram_username'] = transformed_df['instagram_username'].apply(transform_instagram_username)
+    transformed_df = split_contracts(transformed_df)
 
-data = transform_twitter_username(data)
-data = transform_instagram_username(data)
-data = split_contracts(data)
+    # Loading
+    load_raw_to_json(df, "ethereum", next_token)
 
-load_data_to_database(data)
+    selected_columns = ['collection', 'name', 'description', 'image_url', 'owner', 'twitter_username', 'instagram_username', 'chain', 'address']
+    transformed_df_selected = transformed_df[selected_columns]
 
-WARNING:
-    flow that I have created and the functions defined will not work, they are just a blueprint
-    to guide, help you understand the way ETL pipelines are created, while working on this you are welcome (you should)
-    add your own functions, modify mine, to make the pipeline work.
+    load_data_to_database(transformed_df_selected)
 
-ANOTHER WARNING:
-    DO NOT FORGET API PAGINATION (there is more then 100 collections, 100 is for just one page)
 
-ANOTHER WARNING:
-    I WILL KNOW IF THE CODE WAS WRITTEN BY  CHATGPT
 
-P.S
-    please, commit your code to github as you work so I can the the progress for different stages
-"""
+

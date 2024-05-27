@@ -1,12 +1,12 @@
-API_ENDPOINT = 'https://api.opensea.io/api/v2/collections'
-
+url = 'https://api.opensea.io/api/v2/collections'
 
 headers = {
-    "accept": "application/json",
-    "x-api-key": "USE YOUR KEY HERE",
+    "Accept": "application/json",
+    "X-API-KEY": "dacdcd35228a40638599c4c33ceb4a74"
 }
 
 params = {
     'chain': "ethereum",
     'next': None
+
 }
