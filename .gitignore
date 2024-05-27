@@ -130,7 +130,7 @@ env.bak/
 venv.bak/
 
 raw_data
-raw_data.json
+
 
 # Spyder project settings
 .spyderproject
@@ -146,6 +146,7 @@ raw_data.json
 .mypy_cache/
 .dmypy.json
 dmypy.json
+raw_data.json
 
 # Pyre type checker
 .pyre/
