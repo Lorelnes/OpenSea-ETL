@@ -9,6 +9,9 @@ ETLs are much more complex simply having couple of extract transform load functi
 
 there are some fundamental things I would like for you to take a look at and be more cautious next time
 
+- commit your code as you go, you need to understand how git works (git vs github (they are different))
+helps you recover in case anything happens, easy to see code development, easier to manage, maintain
+
 - use OOP (functional programming is great but at a scale its challenging to manage),
 for example you could have DatabaseConnector, Transform, Extract, Load classes.
 Define and structure your code well, create files/folders logically
@@ -31,8 +34,8 @@ def func():
 def func():
   print("hello world")
 
-- working with database in this case PostgreSQL, take a look what realtional databases are how they work, difference between database, table. how to write
-queries
+- working with database in this case PostgreSQL, take a look what realtional databases are how they work,
+difference between database, table. how to write queries. define table schemas in advance
 """
 
 
@@ -64,6 +67,7 @@ for i in range(5): #TODO: 5 was used for testing, why are you extracting only 5 
     # Loading
     load_raw_to_json(df, "ethereum", next_token) #TODO: calling load_raw_to_json twice, will you create same file twice?
 
+    # TODO: these fields can be moved to constants as well
     selected_columns = ['collection', 'name', 'description', 'image_url', 'owner', 'twitter_username', 'instagram_username', 'chain', 'address']
     transformed_df_selected = transformed_df[selected_columns]
 

@@ -30,20 +30,19 @@ import json # not using json
 
 def make_api_call(url, headers, params):
     response = requests.get(url, params=params, headers=headers)
-    #TODO: instead of checking for status code, you can use try...except
-    # send request to API, if error happens wait to resend request or handle it in different way
+    # TODO: instead of checking for status code, you can use try...except
+    #send request to API, if error happens wait to resend request or handle it in different way
 
     if response.status_code == 200:
-        print("Successful API call") #TODO: instead of printing try using logging. e.g logging.info("Successful API call")
+        print("Successful API call") # TODO: instead of printing try using logging. e.g logging.info("Successful API call")
         try:
-            data = response.json()["collections"] #TODO: response might be empty, on the last page, look up different ways to access element in json, dictionaries
+            data = response.json()["collections"] # TODO: response might be empty, on the last page, look up different ways to access element in json, dictionaries
             # here you could use .get("collections")
             next_token = response.json().get("next")
             df = pd.DataFrame(data)
             return df, next_token
          #TODO: using Exception as e is pointless, error handling needs to be more specific
         except Exception as e:
-            #TODO: instead of printing use logging
             return None, None
     else:
         #TODO: you are already handling error in exception, why include it in else?
@@ -52,4 +51,5 @@ def make_api_call(url, headers, params):
         return None, None
     
     #TODO: why is the function returing None, None
+    #TODO: since we are sending many request to the API you can handle case when API is not repsonive, wait for couple of seconds, resend request
 
