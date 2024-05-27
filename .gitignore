@@ -130,6 +130,7 @@ env.bak/
 venv.bak/
 
 raw_data
+raw_data.json
 
 # Spyder project settings
 .spyderproject
