@@ -1,52 +1,37 @@
-<<<<<<< HEAD
-"""
-GENERAL COMMENT (APPLIES NOT ONLY TO THIS .py FILE): when importing modules, you could order them
-its fine the way it is now but for readability it might be good to order.
-
-for example you could decide to import starting with   
-    - standard library imports
-    - related third party imports
-    - local library imports
-
-or you could deside to go for more aesthetic way:
-start by
-from <something> import <something>
-import <something> as <alias>
-import <something>
-
-this is what your imports could look like:
-    from constants import url, params, headers
-    from urllib import response
-    import pandas as pd
-    import requests
-    import json
-"""
 import pandas as pd
 import requests
 import constants
+import logging
+import time
 
-def make_api_call(url, headers, params):
-    response = requests.get(url, params=params, headers=headers)
-    # TODO: instead of checking for status code, you can use try...except
-    #send request to API, if error happens wait to resend request or handle it in different way
-
-    if response.status_code == 200:
-        print("Successful API call") # TODO: instead of printing try using logging. e.g logging.info("Successful API call")
+logging.basicConfig(level=logging.INFO)
+def make_api_call(url, headers, params, max_retries=3, retry_delay=2):
+    for i _ in range(max_retries):
         try:
-            data = response.json()["collections"] # TODO: response might be empty, on the last page, look up different ways to access element in json, dictionaries
-            # here you could use .get("collections")
+            response = requests.get(url, headers=headers, params=params)
+            response.raise_for_status()
+            logging.info("Successful API call")
+
+            data = response.json().get("Collections", [])
             next_token = response.json().get("next")
+
             df = pd.DataFrame(data)
             return df, next_token
-         #TODO: using Exception as e is pointless, error handling needs to be more specific
-        except Exception as e:
-            return None, None
-    else:
-        #TODO: you are already handling error in exception, why include it in else?
-        #TODO: instead of printing use logging
-        print(f"Error: {response.status_code}")
-        return None, None
+        except requests.exceptions.HTTPError as http_err:
+            logging.error(f"HTTP error occurred: {http_err}")
+        except requests.exceptions.RequestsException as request_err:
+            logging.error(f"Requests exception occurred: {request_err}")
+        except ValueError as value_err:
+            logging.error(f"ValueError occurred: {value_err}")
+
+        time.sleep(retry_delay)
+
+    logging.warning("Maximum retries reached")
+    return None, None #
+
+          #  data = response.json()["collections"] # TODO: response might be empty, on the last page, look up different ways to access element in json, dictionaries
+
+
+
     
-    #TODO: why is the function returing None, None
-    #TODO: since we are sending many request to the API you can handle case when API is not repsonive, wait for couple of seconds, resend request
 

@@ -27,13 +27,12 @@ def transform_instagram_username(instagram_username: str) -> str:
 
 
 def split_contracts(df: pd.DataFrame) -> pd.DataFrame:
-    # what happens if contracts is empty?
-    #TODO: handle cases when contracts might be empty
     if not df['contracts'].empty:
         df['address'] = df['contracts'].apply(lambda x: x[0]['address'])
         df['chain'] = df['contracts'].apply(lambda x: x[0]['chain'])
     else:
-        pass
+        df['address'] = None
+        df['chain'] = None
 
     return df
 
