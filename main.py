@@ -1,5 +1,5 @@
-from extract import make_api_call
 from constants import url, params, headers
+from extract import make_api_call
 from transform import transform_instagram_username, transform_twitter_username, split_contracts
 from load import load_raw_to_json, load_data_to_database
 
@@ -43,32 +43,22 @@ difference between database, table. how to write queries. define table schemas i
 df, next_token = make_api_call(url=url, headers=headers, params=params)
 for i in range(5): #TODO: 5 was used for testing, why are you extracting only 5 pages worth of data
 
-    ############################# printing is good for testing, useless here #############################
-    print(df.head())
-    print("Next token:", next_token)
-    ############################# printing is good for testing, useless here #############################
-
     params['next'] = next_token
     df, next_token = make_api_call(url=url, headers=headers, params=params)
     filename = load_raw_to_json(df, "ethereum", next_token) # TODO: load_raw_to_json does not return anything, why assign it to filename
 
-    ############################# printing is good for testing, useless here #############################
-    print(df.head())
-    print("Next token:", next_token)
-    ############################# printing is good for testing, useless here #############################
-
 
     # Transformation
-    transformed_df = df.copy() #TODO: no need to copy df, takes extra space, modification to df are not permanent by default, (inplace=False)
-    transformed_df['twitter_username'] = transformed_df['twitter_username'].apply(transform_twitter_username)
-    transformed_df['instagram_username'] = transformed_df['instagram_username'].apply(transform_instagram_username)
-    transformed_df = split_contracts(transformed_df)
+    #Transformed directly instead of copying df
+    df['twitter_username'] = df['twitter_username'].apply(transform_twitter_username)
+    df['instagram_username'] = df['instagram_username'].apply(transform_instagram_username)
+    df = split_contracts(df)
 
     # Loading
     load_raw_to_json(df, "ethereum", next_token) #TODO: calling load_raw_to_json twice, will you create same file twice?
 
     # TODO: these fields can be moved to constants as well
-    selected_columns = ['collection', 'name', 'description', 'image_url', 'owner', 'twitter_username', 'instagram_username', 'chain', 'address']
+    # moved some fields to constants
     transformed_df_selected = transformed_df[selected_columns]
 
     load_data_to_database(transformed_df_selected)

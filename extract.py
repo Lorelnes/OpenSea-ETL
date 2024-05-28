@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 """
 GENERAL COMMENT (APPLIES NOT ONLY TO THIS .py FILE): when importing modules, you could order them
 its fine the way it is now but for readability it might be good to order.
@@ -20,13 +21,9 @@ this is what your imports could look like:
     import requests
     import json
 """
-
-import requests
-from urllib import response # why are you importing response from urllib, you are not using it
 import pandas as pd
-from constants import url, params, headers # no need to import variables here
-import json # not using json 
-
+import requests
+import constants
 
 def make_api_call(url, headers, params):
     response = requests.get(url, params=params, headers=headers)

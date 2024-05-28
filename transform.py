@@ -13,17 +13,14 @@ I will modify your functions as an example
 def transform_twitter_username(twitter_username: str) -> str:
     #TODO: lets evaluate what you are checking here. if twitter_username is empty not twitter_username => True
     # True not None?????????
-
-    #TODO: you can simply write if twitter_username:
-    if not twitter_username is not None:
+    if twitter_username:
         return f'https://twitter.com/{twitter_username}'
     else:
         return ''
     
 
 def transform_instagram_username(instagram_username: str) -> str:
-    #TODO: same here
-    if not instagram_username is not None:
+    if instagram_username:
         return f'https://instagram.com/{instagram_username}'
     else:
         return ''
@@ -32,8 +29,11 @@ def transform_instagram_username(instagram_username: str) -> str:
 def split_contracts(df: pd.DataFrame) -> pd.DataFrame:
     # what happens if contracts is empty?
     #TODO: handle cases when contracts might be empty
-    df['address'] = df['contracts'].apply(lambda x: x[0]['address'])
-    df['chain'] = df['contracts'].apply(lambda x: x[0]['chain'])
+    if not df['contracts'].empty:
+        df['address'] = df['contracts'].apply(lambda x: x[0]['address'])
+        df['chain'] = df['contracts'].apply(lambda x: x[0]['chain'])
+    else:
+        pass
 
     return df
 
