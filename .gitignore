@@ -147,6 +147,7 @@ raw_data
 .dmypy.json
 dmypy.json
 raw_data.json
+old-OpenSea-ETL
 
 # Pyre type checker
 .pyre/
