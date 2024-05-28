@@ -49,7 +49,6 @@ for i in range(5): #TODO: 5 was used for testing, why are you extracting only 5 
 
 
     # Transformation
-    #Transformed directly instead of copying df
     df['twitter_username'] = df['twitter_username'].apply(transform_twitter_username)
     df['instagram_username'] = df['instagram_username'].apply(transform_instagram_username)
     df = split_contracts(df)

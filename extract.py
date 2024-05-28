@@ -6,7 +6,7 @@ import time
 
 logging.basicConfig(level=logging.INFO)
 def make_api_call(url, headers, params, max_retries=3, retry_delay=2):
-    for i _ in range(max_retries):
+    for _ in range(max_retries):
         try:
             response = requests.get(url, headers=headers, params=params)
             response.raise_for_status()
@@ -27,7 +27,7 @@ def make_api_call(url, headers, params, max_retries=3, retry_delay=2):
         time.sleep(retry_delay)
 
     logging.warning("Maximum retries reached")
-    return None, None #
+    return None, None
 
           #  data = response.json()["collections"] # TODO: response might be empty, on the last page, look up different ways to access element in json, dictionaries
 
